@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Digital Machine</title>
+	<link rel="stylesheet" href="static/src/scss/fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> <!-- https://fonts.google.com/ -->
+    <link href="static/src/scss/bootstrap.min.css" rel="stylesheet">
+    <link href="static/src/scss/templatemo-xtra-blog.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+</head>
+<body>
+	<header class="tm-header" id="tm-header">
+        <div class="tm-header-wrapper">
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="tm-site-header">
+                <div class="mb-3 mx-auto tm-site-logo"><i class="fas fa-times fa-2x"></i></div>
+                <h1 class="text-center">Digital Machine ML-OCR</h1>
+            </div>
+            <nav class="tm-nav" id="tm-nav">
+                <ul>
+                    <li class="tm-nav-item active"><a href="/" class="tm-nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a></li>
+                    <li class="tm-nav-item"><a href="/api_scrapper" class="tm-nav-link">
+                        <i class="fas fa-pen"></i>
+                        Analyse/Scrape URL
+                    </a></li>
+                    <li class="tm-nav-item"><a href="/" class="tm-nav-link">
+                        <i class="fas fa-users"></i>
+                        Team
+                    </a></li>
+                    <li class="tm-nav-item"><a href="/" class="tm-nav-link">
+                        <i class="far fa-comments"></i>
+                        Contact Us
+                    </a></li>
+                </ul>
+            </nav>
+            <p class="tm-mb-80 pr-5 text-white">
+                This Platform is for uploading any type and multiple documents which will be processed and
+                displayed to you with various features.
+            </p>
+        </div>
+    </header>
+    <div class="container-fluid">
+        <main class="tm-main">
+
+            <div class="row tm-row">
+              <form method='post'>
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a class="effect-lily tm-post-link tm-pt-60">
+                        <div class="tm-post-link-inner">
+                            <img src="static/src/images/img-01.jpg" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                     <form method="post">
+                        <input type="hidden" name="mess" value=<%=n%>
+                        <button id="all_features" formaction="/uploader?'file_list'=+{{ output_data }}" formmethod="post" disabled>All Features</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        All in one page.
+                         **Coming Soon**
+                    </p>
+                </article>
+
+
+                <!--- Summarization --->
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a class="effect-lily tm-post-link tm-pt-60">
+                        <div class="tm-post-link-inner">
+                            <img src="static/src/images/summary.jpg" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="filename" value={{output_data['filename']}}>
+                        <input type="hidden" name="page" value={{output_data['page']}}>
+                        <button formaction="/display_feature?'Feature'='Summary'" formmethod="post">Summary</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        Summarizes the whole text.
+                    </p>
+                </article>
+
+
+                <!--- Segmentation --->
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a class="effect-lily tm-post-link tm-pt-60">
+                        <div class=" tm-post-link-inner">
+                            <img src="static/src/images/segmentation.png" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                    <form method="post">
+                        <button formaction="/display_feature?'file_list'=+{{ output_data}}" formmethod="post">Segmentation</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        Segmentation is a process where the whole text is segmented into sentences or paragraphs.
+                    </p>
+                </article>
+
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a class="effect-lily tm-post-link tm-pt-20">
+                        <div class="tm-post-link-inner">
+                            <img src="static/src/images/sentiment.jpg" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="mess" value=<%=n%>
+                        <button formaction="/sentiment?'file_list'=+{{ output_data }}" formmethod="post">Sentiment Analysis</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        Will find out sentiment for each page or paragraph according to the segmentation.
+                    </p>
+                </article>
+
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a href="post.html" class="effect-lily tm-post-link tm-pt-20">
+                        <div class="tm-post-link-inner">
+                            <img src="static/src/images/img-04.jpg" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="mess" value=<%=n%>
+                        <button formaction="/topic_model?'file_list'=+{{ output_data }}" formmethod="post">Topic Modelling</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        Gives an idea of how the document(s) are divided topic wise.
+                    </p>
+                </article>
+
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a class="effect-lily tm-post-link tm-pt-20">
+                        <div class="tm-post-link-inner">
+                            <img src="static/src/images/similarity.png" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="mess" value=<%=n%>
+                        <button formaction="/similarity?'file_list'=+{{ output_data }}" formmethod="post">Similarity</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        Gives you a similarity index between 2 or more documents. This index can be seen paragraph wise as well.
+                    </p>
+                </article>
+
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a class="effect-lily tm-post-link tm-pt-20">
+                        <div class="tm-post-link-inner">
+                            <img src="static/src/images/chronology.png" alt="Image" class="img-fluid">
+                        </div>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="mess" value=<%=n%>
+                        <button formaction="/chronology?'file_list'=+{{ output_data }}" formmethod="post">Chronology</button>
+                    </form>
+                    <p class="tm-pt-30">
+                        Gives you origin of the document or documents. It also gives you a timeline of events inside a document.
+                    </p>
+                </article>
+                </form>
+            </div>
+
+            <footer class="row tm-row">
+                <hr class="col-12">
+                <div class="col-md-6 col-12 tm-color-gray tm-copyright">
+                    Copyright 2022 Digital Machine
+                </div>
+            </footer>
+        </main>
+    </div>
+    <script src="static/src/js/jquery.min.js"></script>
+    <script src="static/src/js/templatemo-script.js"></script>
+    <script>
+ $(document).ready(function(){
+ $('#all_features').on('submit', function(event){
+   event.preventDefault();
+   var count_error = 0;
+
+   if(count_error == 0)
+   {
+    $.ajax({
+   url:"/progressbar",
+   method:"POST",
+   data:$(this).serialize(),
+   beforeSend:function()
+   {
+    $('#save').attr('disabled', 'disabled');
+    $('#process').css('display', 'block');
+   },
+   success:function(data)
+   {
+    var percentage = 0;
+
+    var timer = setInterval(function(){
+     percentage = percentage + 20;
+     progress_bar_process(percentage, timer,data);
+    }, 1000);
+   }
+  })
+   }
+   else
+   {
+    return false;
+   }
+
+  });
+
+  function progress_bar_process(percentage, timer,data)
+  {
+ $('.progress-bar').css('width', percentage + '%');
+ if(percentage > 100)
+ {
+  clearInterval(timer);
+  $('#all_features')[0].reset();
+  $('#process').css('display', 'none');
+  $('.progress-bar').css('width', '0%');
+  $('#save').attr('disabled', false);
+  $('#success_message').html(data);
+  setTimeout(function(){
+   $('#success_message').html('');
+  }, 5000);
+ }
+  }
+
+ });
+</script>
+</body>
+</html>
