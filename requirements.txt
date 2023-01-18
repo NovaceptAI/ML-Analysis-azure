@@ -7,7 +7,7 @@ nltk~=3.6.5
 textblob~=0.17.1
 botocore~=1.22.10
 keyring~=18.0.1
-setuptools~=45.2.0
+setuptools==66.0.0
 fitz~=0.0.1.dev2
 gensim~=4.1.2
 google-cloud-storage
