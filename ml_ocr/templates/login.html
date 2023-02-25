@@ -26,7 +26,7 @@
       <div class="form-inner">
          <form class="login" action="/login_signup" method="post">
          <div class="field">
-               <input type="text" placeholder="Email Address" name="email" required>
+               <input type="text" placeholder="Username" name="username" required>
          </div>
          <div class="field">
             <input type="password" placeholder="Password" name="login_password" required>
@@ -41,7 +41,7 @@
 
          <form action="/login_signup" method="post" class="signup">
             <div class="field">
-               <input type="text" placeholder="Email Address" name="email" required>
+               <input type="text" placeholder="Username" name="username" required>
             </div>
             <div class="field">
                <input type="password" placeholder="Password" name="password" id="password" required>
@@ -97,6 +97,8 @@
    });
 
 </script>
+</body>
+
 <style>
    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
    *{
@@ -110,8 +112,8 @@
    height: 100%;
    width: 100%;
    place-items: center;
-   background: -webkit-linear-gradient(left, #0061FF,#0061FF,#60EFFF
-   , #60EFFF);
+   background: -webkit-linear-gradient(left, #eaeaea,#eaeaea,#eaeaea
+   , #eaeaea);
    }
    ::selection{
    background: #1a75ff;
@@ -281,4 +283,3 @@
    cursor: pointer;
    }
 </style>
-</body>

@@ -500,12 +500,45 @@ section {
 }
 
 /*--------------------------------------------------------------
+# Menu Bar
+--------------------------------------------------------------*/
+
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #e8eef1;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #00202e;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #43b0f1;
+  color: white;
+}
+
+
+/*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
 .hero {
   width: 100%;
   min-height: 100vh;
-  background: url("../img/index-bg-pro.jpg") top center;
+  background: url("../img/blog-header.jpg") top center;
   background-size: cover;
   position: relative;
   padding: 120px 0;

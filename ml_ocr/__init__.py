@@ -5,10 +5,11 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 from werkzeug.utils import secure_filename
 from .models import ocr_detect, segmentation_ml, topic_modelling, analysis, summarizer, chronology
 from google.cloud import storage
-from .models.upload_data import db
+from .models.upload_data import get_db
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
+db = get_db()
 
 
 def create_app(test_config=None):
@@ -122,14 +123,14 @@ def topic_2():
 
 @app.route('/login_signup', methods=["POST", "GET"])
 def login_signup():
-    mail = request.form.get("email")
+    username = request.form.get("username")
     login_pword = request.form.get("login_password")
     if "confirm_password" in request.form.to_dict():
         security_answer = request.form.get("security_q")
         register_pw = request.form['confirm_password']
-        mail_check = db.login_creds.find({"email": mail})
-        if mail_check.count() == 0:
-            db.login_creds.insert_one({"email": mail, "password": register_pw, "security_answer": security_answer})
+        mail_check = db.admin_creds.find({"username": username})
+        if db.admin_creds.count_documents({"username": username}) == 0:
+            db.admin_creds.insert_one({"email": username, "password": register_pw, "security_answer": security_answer})
             return render_template('upload.html')
         else:
             error = "Mail Used"
@@ -137,8 +138,8 @@ def login_signup():
             return redirect(url_for('index'))
 
     else:
-        mail_check = db.login_creds.find({"email": mail})
-        if mail_check.count() > 0:
+        mail_check = db.admin_creds.find({"username": username})
+        if db.admin_creds.count_documents({"username": username}) > 0:
             for i in mail_check:
                 if i['password'] == login_pword:
                     return render_template('upload.html')
