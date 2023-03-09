@@ -4,12 +4,16 @@ import boto3
 from flask import Flask, render_template, request, redirect, flash, url_for
 from werkzeug.utils import secure_filename
 from .models import ocr_detect, segmentation_ml, topic_modelling, analysis, summarizer, chronology
-from google.cloud import storage
-from .models.upload_data import get_db
+from .models.upload_data import get_db, ENV
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
 db = get_db()
+if ENV == "dev":
+    UPLOAD_FOLDER = 'C:/Users/novneet.patnaik/Documents/GitHub/ML-Analysis-azure/ml_ocr/tmp/upload_files'
+elif ENV == "qa":
+    UPLOAD_FOLDER = '/tmp/upload_files'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def create_app(test_config=None):
@@ -177,32 +181,24 @@ def select_pages():
             if " " in f.filename:
                 f.filename = f.filename.replace(" ", "_")
             filename_list.append(f.filename)
+
+            # count the number of files
             counter = counter + 1
 
-            # Reading the Google Application Credentials to access the bucket where
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = app.config['GOOGLE_APPLICATION_CREDENTIALS']
-            bucket_name = "ml_ocr-bucket"
-            storage_client = storage.Client()
-            bucket = storage_client.bucket(bucket_name)
-
-            # Upload file to Google Bucket
-            blob = bucket.blob(f.filename)
-            blob.upload_from_string(f.read())
-            filename = secure_filename(f.filename)
-            file_content = blob.download_as_string()
             # Get AWS Credentials from MongoDB
             data = db['creds'].find_one()
-            s3_bucket = 'digitalmachineocr'
+            s3_bucket = 'digimachine-mlocr'
             s3 = boto3.resource(
                 service_name='s3',
-                region_name='ap-south-1',
+                region_name='us-east-2',
                 aws_access_key_id=data['aws_access_key_id'],
                 aws_secret_access_key=data['aws_secret_access_key']
             )
 
             # Save file in the temporary folder
-            # f.save(os.path.join('./tmp', filename))
-            # file_content = open(os.path.join('./tmp', filename), 'rb')
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_content = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'rb')
             s3.Bucket(s3_bucket).put_object(Key=filename, Body=file_content)
 
         else:
@@ -567,8 +563,4 @@ def chronology_func(output_data_1):
 @app.route('/api_scrapper', methods=['GET', 'POST'])
 def scrapper_func():
     return render_template('api_scrapper.html')
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
 
