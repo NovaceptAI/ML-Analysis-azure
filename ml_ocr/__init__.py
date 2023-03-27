@@ -1,4 +1,5 @@
 # from app import app
+import json
 import os.path
 import boto3
 from flask import Flask, render_template, request, redirect, flash, url_for
@@ -12,7 +13,9 @@ db = get_db()
 if ENV == "dev":
     UPLOAD_FOLDER = 'C:/Users/novneet.patnaik/Documents/GitHub/ML-Analysis-azure/ml_ocr/tmp/upload_files'
 elif ENV == "qa":
-    UPLOAD_FOLDER = '.'
+    UPLOAD_FOLDER = './ml_ocr/tmp/upload_files'
+# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'ppt', 'docx'}
+ALLOWED_EXTENSIONS = {'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -33,6 +36,11 @@ def index():
 @app.route('/login.html')
 def login():
     return render_template('login.html')
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/team.html')
@@ -166,6 +174,12 @@ def upload_file():
     return render_template('upload.html')
 
 
+@app.route('/select_page', methods=['GET', 'POST'])
+def select_page():
+    data = request.get_data()
+    render_template("select_pages.html", output_data=data)
+
+
 @app.route('/select_pages', methods=['GET', 'POST'])
 def select_pages():
     """
@@ -173,38 +187,33 @@ def select_pages():
     :input: File/Files
     :return: no of pages of a file or of each file
     """
-    file_list = request.files.getlist("file")
+    f = request.files.get("file")
     filename_list = []
     counter = 0
-    for f in file_list:
-        if f.filename != "":
-            if " " in f.filename:
-                f.filename = f.filename.replace(" ", "_")
-            filename_list.append(f.filename)
+    # for f in file_list:
+    if f.filename != "" and allowed_file(f.filename):
+        if " " in f.filename:
+            f.filename = f.filename.replace(" ", "_")
+        filename_list.append(f.filename)
 
-            # count the number of files
-            counter = counter + 1
+        # count the number of files
+        counter = counter + 1
 
-            # Get AWS Credentials from MongoDB
-            data = db['creds'].find_one()
-            s3_bucket = 'digimachine-mlocr'
-            s3 = boto3.resource(
-                service_name='s3',
-                region_name='us-east-2',
-                aws_access_key_id=data['aws_access_key_id'],
-                aws_secret_access_key=data['aws_secret_access_key']
-            )
+        # Get AWS Credentials from MongoDB
+        data = db['creds'].find_one()
+        s3_bucket = 'digimachine-mlocr'
+        s3 = boto3.resource(
+            service_name='s3',
+            region_name='us-east-2',
+            aws_access_key_id=data['aws_access_key_id'],
+            aws_secret_access_key=data['aws_secret_access_key']
+        )
 
-            # Save file in the temporary folder
-            filename = secure_filename(f.filename)
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file_content = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'rb')
-            s3.Bucket(s3_bucket).put_object(Key=filename, Body=file_content)
-
-        else:
-            error = "no file"
-            flash('File Not Selected')
-            return redirect(url_for('upload_file'))
+        # Save file in the temporary folder
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file_content = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'rb')
+        s3.Bucket(s3_bucket).put_object(Key=filename, Body=file_content)
 
         # Check extension and call the correct method
         # filename = filename["'file_list'"][0]
@@ -227,7 +236,17 @@ def select_pages():
         for i in range(pages):
             pages_list.append(i + 1)
         data = {"filename": filename, "pages": pages_list}
-        return render_template("select_pages.html", output_data=data)
+        json_str = json.dumps(data)
+        return render_template("select_pages.html", output_data=json_str)
+
+    else:
+        error = "no file"
+
+        if not allowed_file(f.filename):
+            flash('Wrong File Type')
+        else:
+            flash('File Not Selected')
+        return redirect(url_for('upload_file'))
 
 
 @app.route('/display_feature', methods=['GET', 'POST'])

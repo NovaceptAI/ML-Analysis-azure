@@ -113,44 +113,77 @@
     <div class="container-fluid">
         <main class="tm-main">
 <!--            &lt;!&ndash; Search form &ndash;&gt;-->
-<!--                    {% with messages = get_flashed_messages(with_categories=true) %}-->
-<!--                            {% if messages %}-->
-<!--                                {% for category, message in messages %}-->
-<!--                                    <span>{{ message }}</span>-->
-<!--                                {% endfor %}-->
-<!--                            {% endif %}-->
-<!--                        {% endwith %}-->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert">
+                                      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                      {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
             <div class="row tm-row">
                    <div class="row">
                      <div class="form-panel">
-                        <form class="form-horizontal style-form" action="/select_pages" method="post" enctype="multipart/form-data">
+
                         <h3>Please upload file for Analysis</h3>
                             <br>
-                            <h4>Allowed filetypes: pdf, jpeg, png, doc</h4>
-                        <div class="form-group">
-                            <input type=file id="uploadButton" name="file" value="Upload Document" required/>
-                         </div>
-<!--                        <div class="form-group">-->
-<!--                        <input type="file" id="upload" />-->
-<!--                            <audio id="audio" controls>-->
-<!--                              <source src="" id="src" />-->
-<!--                            </audio>-->
-<!--                         </div>-->
-                        <div class="form-group">
-                          <button class="button" name="button1" value="upload" type="submit"> Submit and Start OCR</button>
-                        </div>
+                            <h4>Allowed filetypes: pdf </h4>
+                        <form id="upload-form" method="POST" action="/select_pages" enctype="multipart/form-data">
+                          <input type="file" name="file" id="myFile" accept=".pdf" onchange="uploadFile()"/>
+                          <div id="loader" style="display:none;">
+                            <img src="/static/img/spinner.gif" alt="Loading...">
+                          </div>
+                        </form>
                         <script>
-                             $(function(){
-                                $("input[type = 'submit']").click(function(){
-                                   var $fileUpload = $("input[type='file']");
-                                   if (parseInt($fileUpload.get(0).files.length) > 2){
-                                      alert("You are only allowed to upload a maximum of 3 files");
-                                   }
-                                });
-                             });
+                             function uploadFile() {
+                            // Get the file input element
+                            var fileInput = document.getElementById('myFile');
+                            var form = document.getElementById('upload-form');
+
+                            // Get the file size in bytes
+                            var fileSize = fileInput.files[0].size;
+
+                            // Check if the file size is greater than 5MB (5 * 1024 * 1024 bytes)
+                            if (fileSize > 5242880) {
+                              alert('The file size exceeds the maximum allowed limit of 5MB');
+                              // Clear the file input element
+                              fileInput.value = '';
+                              return;
+                            }
+
+                            // Show the loader
+                            var loader = document.getElementById('loader');
+                            loader.style.display = 'block';
+
+                            // Submit the form using AJAX
+                            var xhr = new XMLHttpRequest();
+<!--                            xhr.open('POST', '/select-pages', true);-->
+<!--                            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');-->
+                            xhr.onload = function()
+                            {
+                            if (xhr.status === 200)
+                                {
+                              // Hide the loader
+                              loader.style.display = 'none';
+
+                              // Navigate to the next page
+<!--                              var responseData = JSON.parse(xhr.responseText);-->
+<!--                              console.log(responseData.filename);-->
+<!--                              console.log(responseData.pages);-->
+                              window.location.href = '/upload.html';
+                                  }
+                            else {
+                              console.log('Request failed.  Returned status of ' + xhr.status);
+                                  }
+                            };
+                            xhr.open(form.method, form.action, true);
+                            xhr.send(new FormData(form));
+<!--                             xhr.send(JSON.stringify(data));-->
+                          }
                           </script>
 
-                        </form>
                      </div>
                      <!-- /row -->
                </div>
@@ -259,4 +292,26 @@
 
 </body>
 
+<style>
+  .alert {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+  }
+
+  .closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .closebtn:hover {
+    color: black;
+  }
+</style>
 </html>

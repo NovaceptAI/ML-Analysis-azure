@@ -1,6 +1,6 @@
 # import spacy library
 import spacy
-# import en_core_web_sm
+import en_core_web_sm
 # from nltk.corpus import wordnet
 
 
