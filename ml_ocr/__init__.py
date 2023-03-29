@@ -176,7 +176,8 @@ def upload_file():
 
 @app.route('/select_page', methods=['GET', 'POST'])
 def select_page():
-    data = request.get_data()
+    # data = request.get_data()
+    data = {"filename": "filename", "pages": [1, 2, 3, 4]}
     render_template("select_pages.html", output_data=data)
 
 
