@@ -130,8 +130,8 @@
                         <h3>Please upload file for Analysis</h3>
                             <br>
                             <h4>Allowed filetypes: pdf </h4>
-                        <form id="upload-form" enctype="multipart/form-data">
-                          <input type="file" name="file" id="myFile" accept=".pdf" onchange="uploadFile()"/>
+                        <form id="file-upload-form" enctype="multipart/form-data">
+                          <input type="file" name="file" id="myFile" accept=".pdf"/>
 <!--                          <div id="loader" style="display:none;">-->
 <!--                            <img src="/static/img/spinner.gif" alt="Loading...">-->
 <!--                          </div>-->
@@ -158,8 +158,8 @@
                             xhr.onload = function() {
                               if (xhr.status === 200) {
                                 // Redirect to the next page
-                                window.location.href = "/next-page";
-                              } else {
+                                window.location.href = "/select_page";
+                              } else {  
                                 console.log('Request failed.  Returned status of ' + xhr.status);
                               }
                             };
