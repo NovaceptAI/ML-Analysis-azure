@@ -3,9 +3,13 @@ import json
 import os.path
 import boto3
 from flask import Flask, render_template, request, redirect, flash, url_for
+from wtforms import ValidationError
+
+from .forms import LoginForm, SignupForm
 from werkzeug.utils import secure_filename
 from .models import ocr_detect, segmentation_ml, topic_modelling, analysis, summarizer, chronology
 from .models.upload_data import get_db, ENV
+import PyPDF2
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -34,8 +38,15 @@ def index():
 
 
 @app.route('/login.html')
-def login():
-    return render_template('login.html')
+def login_page():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+
+
+@app.route('/signup.html')
+def signup_page():
+    form = SignupForm()
+    return render_template('sign_up.html', form=form)
 
 
 def allowed_file(filename):
@@ -133,9 +144,40 @@ def topic_2():
     return render_template('topic_2.html')
 
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        name = form.name.data
+        if db.admin_creds.count_documents({"username": email}) == 0:
+            db.admin_creds.insert_one({"name": name, "email": email, "password": password})
+            return render_template('upload.html')
+        else:
+            raise ValidationError('Mail already used, please try loging in')
+    return render_template('signup.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        mail_check = db.admin_creds.find_one({"username": email})
+        if email == mail_check['username'] and password == mail_check['password']:
+            # Redirect to the dashboard page if the credentials are correct
+            return render_template('upload.html')
+        else:
+            # Display an error message if the credentials are incorrect
+            flash('Invalid email or password. Please try again.', 'error')
+    return render_template('login.html', form=form)
+
+
 @app.route('/login_signup', methods=["POST", "GET"])
 def login_signup():
-    username = request.form.get("username")
+    username = request.form.get("email")
     login_pword = request.form.get("login_password")
     if "confirm_password" in request.form.to_dict():
         security_answer = request.form.get("security_q")
@@ -231,10 +273,24 @@ def select_pages():
            5. Sentiment Analysis
         """
 
-        pages = ocr_detect.count_pages(filename)
+        # Set the folder path where the PDF file is located
+        folder_path = UPLOAD_FOLDER
+
+        # Concatenate the folder path and file name to create the complete file path
+        file_path = folder_path + '/' + filename
+
+        # Open the PDF file in read-binary mode
+        with open(file_path, 'rb') as file:
+            # Create a PDF reader object
+            pdf_reader = PyPDF2.PdfReader(file)
+
+            # Get the number of pages in the PDF document
+            num_pages = len(pdf_reader.pages)
+
+        # pages = ocr_detect.count_pages(filename)
         pages_list = []
         # Send the no. of pages
-        for i in range(pages):
+        for i in range(num_pages):
             pages_list.append(i + 1)
         data = {"filename": filename, "pages": pages_list}
         json_str = json.dumps(data)
@@ -319,9 +375,9 @@ def display_feature():
 
 @app.route('/features', methods=['GET', 'POST'])
 def all_features():
-    filename = request.args.to_dict(flat=False)
+    filename = request.args.get("file_list")  # Retrieve the filename from the query parameter
     page_selection = request.form.get("page")
-    data = {"filename": filename["'file_list'"][0], "page": page_selection}
+    data = {"filename": filename, "page": page_selection}
     return render_template('features.html', output_data=data)
 
 

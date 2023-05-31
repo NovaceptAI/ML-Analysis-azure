@@ -130,42 +130,43 @@
                         <h3>Please upload file for Analysis</h3>
                             <br>
                             <h4>Allowed filetypes: pdf </h4>
-                        <form id="file-upload-form" enctype="multipart/form-data">
+                        <form id="file-upload-form" method="POST" action="/select_pages" enctype="multipart/form-data">
                           <input type="file" name="file" id="myFile" accept=".pdf"/>
 <!--                          <div id="loader" style="display:none;">-->
 <!--                            <img src="/static/img/spinner.gif" alt="Loading...">-->
 <!--                          </div>-->
+                          <button type="submit">Process</button>
                         </form>
 
                        <!-- Include the JavaScript code in your HTML file -->
-                        <script type="text/javascript">
-                          // Listen for the form submission event
-                          document.getElementById('file-upload-form').addEventListener('submit', function(event) {
-                            // Prevent the default form submission behavior
-                            event.preventDefault();
+<!--                        <script type="text/javascript">-->
+<!--                          // Listen for the form submission event-->
+<!--                          document.getElementById('file-upload-form').addEventListener('submit', function(event) {-->
+<!--                            // Prevent the default form submission behavior-->
+<!--                            event.preventDefault();-->
 
-                            // Get the file input element and the selected file
-                            var fileInput = document.getElementsByName('file')[0];
-                            var file = fileInput.files[0];
+<!--                            // Get the file input element and the selected file-->
+<!--                            var fileInput = document.getElementsByName('file')[0];-->
+<!--                            var file = fileInput.files[0];-->
 
-                            // Create a FormData object and append the file to it
-                            var formData = new FormData();
-                            formData.append('file', file);
+<!--                            // Create a FormData object and append the file to it-->
+<!--                            var formData = new FormData();-->
+<!--                            formData.append('file', file);-->
 
-                            // Send an AJAX request to the server
-                            var xhr = new XMLHttpRequest();
-                            xhr.open('POST', '/select_pages', true);
-                            xhr.onload = function() {
-                              if (xhr.status === 200) {
-                                // Redirect to the next page
-                                window.location.href = "/select_page";
-                              } else {  
-                                console.log('Request failed.  Returned status of ' + xhr.status);
-                              }
-                            };
-                            xhr.send(formData);
-                          });
-                        </script>
+<!--                            // Send an AJAX request to the server-->
+<!--                            var xhr = new XMLHttpRequest();-->
+<!--                            xhr.open('POST', '/select_pages', true);-->
+<!--                            xhr.onload = function() {-->
+<!--                              if (xhr.status === 200) {-->
+<!--                                // Redirect to the next page-->
+<!--                                window.location.href = "/select_page";-->
+<!--                              } else {  -->
+<!--                                console.log('Request failed.  Returned status of ' + xhr.status);-->
+<!--                              }-->
+<!--                            };-->
+<!--                            xhr.send(formData);-->
+<!--                          });-->
+<!--                        </script>-->
 <!--                        <script>-->
 <!--                             function uploadFile() {-->
 <!--                            // Get the file input element-->

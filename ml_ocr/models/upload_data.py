@@ -2,7 +2,7 @@ import os
 import boto3
 import pymongo
 
-ENV = "qa"
+ENV = "dev"
 
 
 def get_db():
