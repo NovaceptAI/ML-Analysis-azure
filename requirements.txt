@@ -7,7 +7,6 @@ nltk~=3.6.5
 textblob~=0.17.1
 botocore~=1.22.10
 keyring~=18.0.1
-pathlib
 gensim~=4.1.2
 google-cloud-storage
 spacy==3.3.0.dev0
