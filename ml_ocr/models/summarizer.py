@@ -1,10 +1,6 @@
-# importing libraries
-# import nltk
-# from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from gensim.parsing.preprocessing import STOPWORDS
-import nltk
-nltk.download('punkt')
+# nltk.download('punkt')
 
 
 def summarization_ml(output_data):

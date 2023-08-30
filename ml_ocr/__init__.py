@@ -12,7 +12,7 @@ from .models.upload_data import get_db, ENV
 import PyPDF2
 
 app = Flask(__name__)
-app.secret_key = 'super secret key'
+# app.secret_key = 'super secret key'
 db = get_db()
 if ENV == "dev":
     UPLOAD_FOLDER = 'C:/Users/novneet.patnaik/Documents/GitHub/ML-Analysis-azure/ml_ocr/tmp/upload_files'
