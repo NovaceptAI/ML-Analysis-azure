@@ -6,7 +6,7 @@ db = get_db()
 data = db['creds'].find_one()
 textract = boto3.client('textract', 'us-east-2', aws_access_key_id=data['aws_access_key_id'],
                         aws_secret_access_key=data['aws_secret_access_key'])
-s3BucketName = 'digimachine-mlocr'
+s3BucketName = data['bucketname']
 
 
 def count_pages(document_name):

@@ -5,7 +5,7 @@ import boto3
 from flask import Flask, render_template, request, redirect, flash, url_for
 from wtforms import ValidationError
 
-from .forms import LoginForm, SignupForm
+from ml_ocr.forms import LoginForm, SignupForm
 from werkzeug.utils import secure_filename
 from .models import ocr_detect, segmentation_ml, topic_modelling, analysis, summarizer, chronology
 from .models.upload_data import get_db, ENV
@@ -162,16 +162,16 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        mail_check = db.admin_creds.find_one({"username": email})
-        if email == mail_check['username'] and password == mail_check['password']:
-            # Redirect to the dashboard page if the credentials are correct
-            return render_template('upload.html')
-        else:
-            # Display an error message if the credentials are incorrect
-            flash('Invalid email or password. Please try again.', 'error')
+    # if form.validate_on_submit():
+    email = form.email.data
+    password = form.password.data
+    mail_check = db.admin_creds.find_one({"username": email})
+    if email == mail_check['username'] and password == mail_check['password']:
+        # Redirect to the dashboard page if the credentials are correct
+        return render_template('upload.html')
+    else:
+        # Display an error message if the credentials are incorrect
+        flash('Invalid email or password. Please try again.', 'error')
     return render_template('login.html', form=form)
 
 
@@ -244,7 +244,7 @@ def select_pages():
 
         # Get AWS Credentials from MongoDB
         data = db['creds'].find_one()
-        s3_bucket = 'digimachine-mlocr'
+        s3_bucket = data['bucketname']
         s3 = boto3.resource(
             service_name='s3',
             region_name='us-east-2',

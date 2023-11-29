@@ -49,14 +49,11 @@
     </header>
     <div class="container-fluid">
         <main class="tm-main">
-<!--          <div class="progress">-->
-<!--           <div class="progress-bar progress-bar-striped active bg-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="">Please Wait while your document is being processed</div>-->
-<!--          </div>-->
-
+    
             <h1>Select Pages for Analysis</h1>
-            <form class="form-horizontal style-form" action="/features?'file_list'=+{{ output_data['filename'] }}" method="post">
+            <form id="feature-form" class="form-horizontal style-form" action="/features" method="post">
             <div class="feature-content">
-                <select name="page" >
+                <select id="page-select" name="page" >
                     {%for i in output_data['pages']%}
                         <option>{{i}}</option>
                     {%endfor%}
@@ -65,7 +62,7 @@
                 <button class="button" name="button1" value="upload" type="submit"> Submit for Feature Selection </button>
             </div>
             </form>
-
+    
             <footer class="row tm-row">
                 <hr class="col-12">
                 <div class="col-md-6 col-12 tm-color-gray">
@@ -76,6 +73,26 @@
             </footer>
         </main>
     </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('#feature-form').on('submit', function(event){
+            event.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: {
+                            'file_list': '{{ output_data['filename']}}',
+                            'page': $('#page-select').val()
+                        },
+                success: function(response) {
+                    // handle response
+                }
+            });
+        });
+    });
+    </script>
     <script src="static/src/js/jquery.min.js"></script>
     <script src="static/src/js/templatemo-script.js"></script>
     <script>
