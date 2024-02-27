@@ -1,11 +1,12 @@
-import os
-import boto3
+# import os
+# import boto3
 import pymongo
 
 ENV = "qa"
 
 
 def get_db():
+    global client
     if ENV == "qa":
         client = pymongo.MongoClient("mongodb+srv://novacept:QdH3bIChIEMyDXBr@panrange-cluster.wkfg1lx.mongodb.net"
                                      "/?retryWrites "

@@ -4,7 +4,7 @@ from .upload_data import get_db
 # Get AWS Credentials from MongoDB
 db = get_db()
 data = db['creds'].find_one()
-textract = boto3.client('textract', 'us-east-2', aws_access_key_id=data['aws_access_key_id'],
+textract = boto3.client('textract', 'us-east-1', aws_access_key_id=data['aws_access_key_id'],
                         aws_secret_access_key=data['aws_secret_access_key'])
 s3BucketName = data['bucketname']
 

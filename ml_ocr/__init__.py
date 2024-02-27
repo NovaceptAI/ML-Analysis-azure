@@ -230,7 +230,7 @@ def select_pages():
     :input: File/Files
     :return: no of pages of a file or of each file
     """
-    f = request.files.get("file")
+    f = request.files.get("filename")
     filename_list = []
     counter = 0
     # for f in file_list:
@@ -247,7 +247,7 @@ def select_pages():
         s3_bucket = data['bucketname']
         s3 = boto3.resource(
             service_name='s3',
-            region_name='us-east-2',
+            region_name='us-east-1',
             aws_access_key_id=data['aws_access_key_id'],
             aws_secret_access_key=data['aws_secret_access_key']
         )
@@ -375,7 +375,11 @@ def display_feature():
 
 @app.route('/features', methods=['GET', 'POST'])
 def all_features():
-    filename = request.args.get("file_list")  # Retrieve the filename from the query parameter
+    output_data = request.form['file_list']
+    output_data_dict = json.loads(output_data)
+
+    filename = output_data_dict['filename']
+    pages = output_data_dict['pages']
     page_selection = request.form.get("page")
     data = {"filename": filename, "page": page_selection}
     return render_template('features.html', output_data=data)

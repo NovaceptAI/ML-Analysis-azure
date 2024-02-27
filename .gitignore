@@ -1,2 +1,13 @@
+*.pdf
+*.jpg
+*.png
 
+/bin/
+/build/
 ml_ocr/models/upload_data.py
+__pycache__/
+.idea/
+*.pyc
+*.cpython-39.pyc
+misc.xml
+vcs.xml

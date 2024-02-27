@@ -124,16 +124,17 @@
                    <div class="row">
                      <div class="form-panel">
                         <h1>Select Pages for Analysis</h1>
-                        <form class="form-horizontal style-form" action="/features?'file_list'=+{{ output_data['filename'] }}" method="post">
-                        <div class="feature-content">
-                            <select name="page" >
-                                {%for i in output_data['pages']%}
-                                    <option>{{i}}</option>
-                                {%endfor%}
+                        <form class="form-horizontal style-form" action="/features" method="post">
+                            <input type="hidden" name="file_list" value="{{ output_data }}">
+                            <div class="feature-content">
+                                <select name="page">
+                                    {% for i in output_data.pages %}
+                                        <option>{{ i }}</option>
+                                    {% endfor %}
                                     <option> All </option>
-                            </select>
-                            <button class="button" name="button1" value="upload" type="submit"> Submit for Feature Selection </button>
-                        </div>
+                                </select>
+                                <button class="button" name="button1" value="upload" type="submit">Submit for Feature Selection</button>
+                            </div>
                         </form>
                      </div>
                      <!-- /row -->
