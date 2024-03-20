@@ -2,7 +2,7 @@
 import json
 import os.path
 import boto3
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for, jsonify
 from wtforms import ValidationError
 
 from ml_ocr.forms import LoginForm, SignupForm
@@ -196,7 +196,8 @@ def login_signup():
         if db.admin_creds.count_documents({"username": username}) > 0:
             for i in mail_check:
                 if i['password'] == login_pword:
-                    return render_template('upload.html')
+                    response = {"status": "success", "message": "Login successful"}
+                    return jsonify(response), 200
             error = "wrong password"
             flash('Username and Password do not match')
             return redirect(url_for('index'))
@@ -360,12 +361,12 @@ def display_feature():
             #     page_counter_list.append(page_counter)
             data['page'] = "All Pages"
         else:
-            data['page'] = "Page "+str(page)
+            data['page'] = "Page " + str(page)
         counter = 0
         for page_data in data["summarization"]:
             counter = counter + 1
-            page_data = "Page " +str(counter) + "    " + page_data
-            data['summarization'][counter-1] = page_data
+            page_data = "Page " + str(counter) + "    " + page_data
+            data['summarization'][counter - 1] = page_data
         return render_template('summarization.html', output_data=data)
 
     if feature_needed.strip("'\'") == "Segmentation":
@@ -643,4 +644,3 @@ def chronology_func(output_data_1):
 @app.route('/api_scrapper', methods=['GET', 'POST'])
 def scrapper_func():
     return render_template('api_scrapper.html')
-

@@ -1,50 +1,32 @@
 from nltk.tokenize import word_tokenize, sent_tokenize
 from gensim.parsing.preprocessing import STOPWORDS
-# nltk.download('punkt')
 
 
 def summarization_ml(output_data):
     # Tokenizing the text
-    stopWords = STOPWORDS
-    words = word_tokenize(output_data)
+    stopWords = set(STOPWORDS)
+    words = word_tokenize(output_data.lower())
 
-    # Creating a frequency table to keep the
-    # score of each word
-
-    freqTable = dict()
+    # Creating a frequency table to keep the score of each word
+    freqTable = {}
     for word in words:
-        word = word.lower()
         if word in stopWords:
             continue
-        if word in freqTable:
-            freqTable[word] += 1
-        else:
-            freqTable[word] = 1
+        freqTable[word] = freqTable.get(word, 0) + 1
 
-    # Creating a dictionary to keep the score
-    # of each sentence
+    # Creating a dictionary to keep the score of each sentence
     sentences = sent_tokenize(output_data)
-    sentenceValue = dict()
+    sentenceValue = {}
 
     for sentence in sentences:
-        for word, freq in freqTable.items():
-            if word in sentence.lower():
-                if sentence in sentenceValue:
-                    sentenceValue[sentence] += freq
-                else:
-                    sentenceValue[sentence] = freq
+        for word in word_tokenize(sentence.lower()):
+            if word in freqTable:
+                sentenceValue[sentence] = sentenceValue.get(sentence, 0) + freqTable[word]
 
-    sumValues = 0
-    for sentence in sentenceValue:
-        sumValues += sentenceValue[sentence]
+    # Calculate the average value of a sentence
+    average = sum(sentenceValue.values()) / len(sentenceValue) if sentenceValue else 0
 
-    # Average value of a sentence from the original text
+    # Generating the summary based on sentence scores
+    summary = ' '.join(sentence for sentence, value in sentenceValue.items() if value > 1.2 * average)
 
-    average = int(sumValues / len(sentenceValue))
-
-    # Storing sentences into our summary.
-    summary = ''
-    for sentence in sentences:
-        if (sentence in sentenceValue) and (sentenceValue[sentence] > (1.2 * average)):
-            summary += " " + sentence
     return summary
